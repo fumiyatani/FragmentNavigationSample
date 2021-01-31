@@ -22,6 +22,8 @@ class MainPresenter @Inject constructor(
     private var navigationType = NavigationType.FRAGMENT_FIRST
 
     override fun onCreate(navigationType: NavigationType) {
+        this.navigationType = navigationType
+
         coroutineContext.launch {
 
             useCase.initList()
@@ -53,11 +55,12 @@ class MainPresenter @Inject constructor(
         coroutineContext.launch {
             if (id < 1) {
                 navigationType = NavigationType.FRAGMENT_FIRST
-                view.moveToPrevious(navigationType)
+                view.moveToStartActivity(navigationType)
             } else {
                 val secondList = SecondListViewData(
                     useCase.getSecondList().map { it.convertToViewData() }
                 )
+                navigationType = NavigationType.FRAGMENT_SECOND
                 view.moveToSecondFragment(secondList)
             }
         }
@@ -67,11 +70,12 @@ class MainPresenter @Inject constructor(
         coroutineContext.launch {
             if (id < 1) {
                 navigationType = NavigationType.FRAGMENT_SECOND
-                view.moveToPrevious(navigationType)
+                view.moveToStartActivity(navigationType)
             } else {
                 val thirdList = ThirdListViewData(
                     useCase.getThirdList().map { it.convertToViewData() }
                 )
+                navigationType = NavigationType.FRAGMENT_THIRD
                 view.moveToThirdFragment(thirdList)
             }
 
@@ -81,7 +85,35 @@ class MainPresenter @Inject constructor(
     override fun onSelectThird(id: Int) {
         coroutineContext.launch {
             navigationType = NavigationType.FRAGMENT_THIRD
-            view.moveToPrevious(navigationType)
+            view.moveToStartActivity(navigationType)
+        }
+    }
+
+    override fun onBackPressed() {
+        coroutineContext.launch {
+
+            when (navigationType) {
+                NavigationType.FRAGMENT_FIRST -> {
+                    // Firstの状態の時はStartActivityに戻る
+                    view.moveToPreviousFirstFragment()
+                }
+                NavigationType.FRAGMENT_SECOND -> {
+                    // Secondの状態の時はFirstに遷移する
+                    val firstListViewData = FirstListViewData(
+                        useCase.getFirstList().map { it.convertToViewData() }
+                    )
+                    navigationType = NavigationType.FRAGMENT_FIRST
+                    view.moveToFirstFragment(firstListViewData)
+                }
+                NavigationType.FRAGMENT_THIRD -> {
+                    // Thirdにいる時はSecondに遷移する
+                    val secondList = SecondListViewData(
+                        useCase.getSecondList().map { it.convertToViewData() }
+                    )
+                    navigationType = NavigationType.FRAGMENT_SECOND
+                    view.moveToSecondFragment(secondList)
+                }
+            }
         }
     }
 

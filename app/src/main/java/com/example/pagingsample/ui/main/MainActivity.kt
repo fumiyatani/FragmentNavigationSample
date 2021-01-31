@@ -38,7 +38,7 @@ class MainActivity :
         bind = DataBindingUtil.setContentView(this, R.layout.activity_main)
 
         bind.navigatePrevious.setOnClickListener {
-            onBackPressed()
+            presenter.onBackPressed()
         }
 
         navigationType =
@@ -74,7 +74,11 @@ class MainActivity :
         showFragment(fragment)
     }
 
-    override fun moveToPrevious(navigationType: NavigationType) {
+    override fun moveToPreviousFirstFragment() {
+        finishForActivityResult(RESULT_CANCELED, null)
+    }
+
+    override fun moveToStartActivity(navigationType: NavigationType) {
         intent.putExtra(NavigationTypeBundleKey.KEY_NAVIGATION_TYPE, navigationType)
         finishForActivityResult(RESULT_OK, intent)
     }
@@ -87,12 +91,7 @@ class MainActivity :
     }
 
     override fun onBackPressed() {
-        val backEntry = supportFragmentManager.backStackEntryCount
-        if (backEntry < 2) {
-            finishForActivityResult(RESULT_CANCELED)
-        } else {
-            supportFragmentManager.popBackStack()
-        }
+        presenter.onBackPressed()
     }
 
     companion object {

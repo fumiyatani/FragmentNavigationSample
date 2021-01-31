@@ -9,10 +9,12 @@ interface MainContract {
         fun moveToFirstFragment(firstList: FirstListViewData)
         fun moveToSecondFragment(secondList: SecondListViewData)
         fun moveToThirdFragment(thirdList: ThirdListViewData)
-        fun moveToPrevious(navigationType: NavigationType)
+        fun moveToPreviousFirstFragment()
+        fun moveToStartActivity(navigationType: NavigationType)
     }
 
     interface Presenter {
+        fun onBackPressed()
         fun onCreate(navigationType: NavigationType)
         fun onSelectFirst(id: Int)
         fun onSelectSecond(id: Int)
