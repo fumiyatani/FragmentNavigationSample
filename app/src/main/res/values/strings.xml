@@ -1,0 +1,9 @@
+<resources>
+    <string name="app_name">PagingSample</string>
+    <string name="label_bakc">戻る</string>
+    <string name="label_navigate_button">遷移する</string>
+    <string name="label_navigate_start_button">トップに戻る</string>
+    <string name="label_first_fragment">FirstFragment</string>
+    <string name="label_second_fragment">SecondFragment</string>
+    <string name="label_third_fragment">ThirdFragment</string>
+</resources>
